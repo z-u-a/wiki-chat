@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wikipedia RAG Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    input, textarea, button { width: 100%; margin-top: 8px; padding: 10px; }
+    .panel { margin-top: 16px; }
+    .card { border: 1px solid #ddd; padding: 16px; border-radius: 8px; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <h1>Wikipedia RAG Chat</h1>
+
+  <div class="panel card">
+    <h2>Import Article</h2>
+    <input id="url" placeholder="Paste Wikipedia URL" />
+    <button id="importBtn">Import</button>
+    <p id="importStatus"></p>
+  </div>
+
+  <div class="panel card" id="articlePanel" style="display:none;">
+    <h2>Summary</h2>
+    <p id="summary"></p>
+    <h3>Ask a question</h3>
+    <textarea id="question" rows="3" placeholder="Ask about the article"></textarea>
+    <button id="askBtn">Ask</button>
+    <p id="chatStatus"></p>
+    <div id="answer" style="white-space: pre-wrap; margin-top: 16px;"></div>
+  </div>
+
+  <script>
+    const importBtn = document.getElementById('importBtn');
+    const askBtn = document.getElementById('askBtn');
+    const urlInput = document.getElementById('url');
+    const importStatus = document.getElementById('importStatus');
+    const summaryEl = document.getElementById('summary');
+    const articlePanel = document.getElementById('articlePanel');
+    const chatStatus = document.getElementById('chatStatus');
+    const answerEl = document.getElementById('answer');
+    const questionInput = document.getElementById('question');
+    let currentArticleId = null;
+
+    importBtn.addEventListener('click', async () => {
+      const url = urlInput.value.trim();
+      if (!url) return;
+      importStatus.textContent = 'Importing article...';
+      articlePanel.style.display = 'none';
+      answerEl.textContent = '';
+
+      const response = await fetch('/api/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        importStatus.textContent = body.error || 'Import failed';
+        return;
+      }
+      currentArticleId = body.articleId;
+      summaryEl.textContent = body.summary;
+      importStatus.textContent = `Loaded: ${body.title}`;
+      articlePanel.style.display = 'block';
+    });
+
+    askBtn.addEventListener('click', async () => {
+      const question = questionInput.value.trim();
+      if (!question || !currentArticleId) return;
+      chatStatus.textContent = 'Asking...';
+      answerEl.textContent = '';
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ articleId: currentArticleId, question })
+      });
+      const body = await response.json();
+      if (!response.ok) {
+        chatStatus.textContent = body.error || 'Chat failed';
+        return;
+      }
+      chatStatus.textContent = 'Answer:';
+      answerEl.textContent = body.answer;
+    });
+  </script>
+</body>
+</html>
