@@ -23,9 +23,17 @@ services:
       - qdrant-data:/qdrant/storage
   ollama:
     image: ollama/ollama:latest
-    command: ["ollama", "serve", "--host", "0.0.0.0", "--port", "11434"]
+    entrypoint: >
+      /bin/sh -c "ollama serve &
+      sleep 3 &&
+      ollama pull llama3.2:1b &&
+      ollama pull nomic-embed-text &&
+      wait"
+    command: [ "serve"]
     ports:
       - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
     volumes:
       - ollama-data:/root/.ollama
 volumes:
