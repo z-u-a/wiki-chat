@@ -18,10 +18,12 @@ router.post('/import', async (req, res, next) => {
 
     const article = await scrapeWikipediaArticle(url);
     const articleId = createArticleId(url);
-
-    const summary = await ollama.summarize(article.text);
     const chunks = chunkText(article.text);
-    const embeddings = await ollama.embedTexts(chunks.map(({ text }) => text));
+    
+    const [summary, embeddings] = await Promise.all([
+      ollama.summarize(article.text),
+      ollama.embedTexts(chunks.map(({ text }) => text))
+    ]);
 
     await vectorClient.ensureCollection();
     await vectorClient.upsertArticleChunks(articleId, chunks, embeddings);

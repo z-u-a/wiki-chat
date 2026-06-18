@@ -14,10 +14,13 @@
 - [ ] Implement Qdrant client for collection and search
 - [ ] Wire import flow: scrape, summarise, embed, store
 - [ ] Wire chat flow: embed question, retrieve, answer
+- [ ] Fix Qdrant collection creation endpoint (PUT vs POST)
+- [ ] Fix point ID type (string → number)  
+- [ ] Parallelize summarize and embed with Promise.all
 
 ## Frontend
 - [ ] Build static UI with URL form, summary area, chat box
-- [ ] Connect frontend to backend API
+- [ ] Connect frontend to backe\KTJJFnd API
 - [ ] Add error handling and loading states
 
 ## Testing

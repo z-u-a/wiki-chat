@@ -8,19 +8,18 @@ export default class QdrantClient {
     const url = `${this.baseUrl}/collections/${this.collection}`;
     const response = await fetch(url);
     if (response.ok) return;
-    await fetch(`${this.baseUrl}/collections`, {
-      method: 'POST',
+    await fetch(`${this.baseUrl}/collections/${this.collection}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: this.collection,
-        vectors: { size: 1536, distance: 'Cosine' }
+        vectors: { size: 768, distance: 'Cosine' }
       })
     });
   }
 
   async upsertArticleChunks(articleId, chunks, embeddings) {
     const points = chunks.map((chunk, index) => ({
-      id: `${articleId}-${index}`,
+      id: index + 1,
       vector: embeddings[index],
       payload: {
         articleId,
