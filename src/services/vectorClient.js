@@ -42,6 +42,7 @@ export default class QdrantClient {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         vector: embedding,
+        with_payload: true,
         limit,
         filter: { must: [{ key: 'articleId', match: { value: articleId } }] }
       })
