@@ -43,9 +43,25 @@ router.post('/chat', async (req, res, next) => {
 
     const queryEmbedding = await ollama.embedTexts([question]);
     const hits = await vectorClient.searchArticleChunks(articleId, queryEmbedding[0], 4);
-    const context = hits.map((hit, index) => `${index + 1}. ${hit.payload.content}`).join('\n\n');
+
+    const contextParts = hits.map((hit, index) => {
+      let content;
+      if (hit.payload) {
+        if (typeof hit.payload === 'string') {
+          content = hit.payload;
+        } else {
+          content = hit.payload.content ?? hit.payload.text ?? (hit.payload.data && hit.payload.data.content) ?? JSON.stringify(hit.payload);
+        }
+      } else {
+        content = hit.id ? `chunk id:${hit.id}` : JSON.stringify(hit);
+      }
+      return `${index + 1}. ${content}`;
+    });
+
+    const context = contextParts.join('\n\n');
 
     const answer = await ollama.answerQuestion(question, context);
+    console.log('Answer from Ollama:', answer);
     res.json({ answer, context });
   } catch (error) {
     next(error);
