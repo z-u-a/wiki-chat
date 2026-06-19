@@ -32,13 +32,17 @@ npm test
 The app uses Ollama via `http://ollama:11434`.
 If you need to pull a model into the Ollama container:
 ```bash
-docker compose run ollama ollama pull llama3:3b
+docker compose run ollama ollama pull llama3.2:1b
 ```
+
+Note: `docker compose up` will start the Ollama service and (by default) pull the configured models. Pulling and loading models can take several minutes and the first chat/import requests may return empty content while a model finishes loading. See `notes.md` for known limitations and timings.
 
 ## Notes
 - The vector database is Qdrant, containerised in `docker-compose.yml`.
 - Both summarisation and chat are routed through local Ollama inference.
 - The UI is intentionally minimal: URL input, summary display, and chat box.
+
+Known limitation: import API response time can be 60–120 seconds when running locally without GPU acceleration. See `notes.md` for details.
 
 ## Useful files
 - `REQUIREMENTS.md`
