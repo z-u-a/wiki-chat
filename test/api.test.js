@@ -64,4 +64,18 @@ describe('API routes', () => {
     expect(response.status).toBe(200);
     expect(response.body.answer).toBe('Answer text');
   });
+
+  it('handles search hits without payload.content', async () => {
+    mockOllama.embedTexts.mockResolvedValue([[0.5, 0.6]]);
+    // simulate minimal hit shape returned by some vector stores
+    mockVector.searchArticleChunks.mockResolvedValue([{ id: 1, version: 2, score: 0.76 }]);
+    mockOllama.answerQuestion.mockResolvedValue('Answer for minimal hits');
+
+    const response = await request(app)
+      .post('/api/chat')
+      .send({ articleId: 'abc123', question: 'What is this?' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.answer).toBe('Answer for minimal hits');
+  });
 });

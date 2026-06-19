@@ -17,6 +17,7 @@
 - [ ] Fix Qdrant collection creation endpoint (PUT vs POST)
 - [ ] Fix point ID type (string → number)  
 - [ ] Parallelize summarize and embed with Promise.all
+ - [x] Handle missing `payload.content` in search hits (robust context builder)
 
 ## Frontend
 - [ ] Build static UI with URL form, summary area, chat box
@@ -27,6 +28,7 @@
 - [ ] Write unit tests for scrape, chunk, Ollama client, Qdrant client
 - [ ] Write integration test for import/chat routes with mocked services
 - [ ] Confirm coverage ≥ 85%
+ - [x] Update unit test for chat to include minimal search hit shape
 
 ## Containerisation
 - [ ] Build Dockerfile for backend

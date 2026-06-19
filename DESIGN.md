@@ -33,6 +33,8 @@ A simple web server exposes two API endpoints and serves a static frontend.
 7. User submits a chat query.
 8. Server embeds the query, retrieves the highest-scoring chunks, and asks Ollama to answer with the retrieved context.
 
+Note: the server is defensive when building the prompt context — search hits may sometimes contain minimal metadata (for example only `id` and score). In those cases the API falls back to chunk id or serialized metadata instead of assuming `payload.content` exists.
+
 ## Local LLM runtime
 
 - Chosen runtime: Ollama
