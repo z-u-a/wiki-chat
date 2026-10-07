@@ -1,4 +1,4 @@
-# VentureDive RAG Chat Take-Home
+# RAG Chat
 
 A minimal Wikipedia article ingestion app with local LLM summarisation and RAG-powered chat.
 
