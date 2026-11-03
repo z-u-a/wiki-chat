@@ -1,7 +1,7 @@
 {
-  "name": "vd-take-home-test",
+  "name": "wiki-rag-chat",
   "version": "1.0.0",
-  "description": "VentureDive take-home RAG chat app",
+  "description": "RAG chat app",
   "type": "module",
   "scripts": {
     "start": "node src/server.js",
